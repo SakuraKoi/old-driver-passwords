@@ -7,7 +7,22 @@ from sys import exit
 
 
 def cli_main():
-    pass
+    parser = ArgumentParser("drivers-dict")
+    command = parser.add_subparsers(title="subcommands", dest="command")
+    sort = command.add_parser("sort")
+    sort.add_argument(
+        "-d", "--dictionary", help="specific the dictionary file", default="resource/dictionary.txt")
+    test = command.add_parser("test")
+    test.add_argument("archive", help="specific the archive file to extract")
+    test.add_argument(
+        "-d", "--dictionary", help="specific the dictionary file", default="resource/dictionary.txt")
+
+    args = parser.parse_args()
+
+    if "test" == args.command:
+        cli_test(args.archive, args.dictionary)
+    elif "sort" == args.command:
+        cli_sort(args.dictionary)
 
 
 def cli_sort(dictionary: str = "resource/dictionary.txt"):
@@ -58,4 +73,4 @@ def cli_test(compressed: str, dictionary: str = "resource/dictionary.txt"):
 
 
 if __name__ == "__main__":
-    cli_test("README.zip")
+    cli_main()
