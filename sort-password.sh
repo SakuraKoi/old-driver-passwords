@@ -1,0 +1,3 @@
+echo Sorting passwords...
+cat old-driver-passwords | nl -b a -s : | sort -t : -k 2 -u | cut -d : -f 2- > old-driver-passwords
+wc -l old-driver-passwords
