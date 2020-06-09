@@ -6,8 +6,6 @@ from subprocess import DEVNULL, PIPE, run
 from sys import exit, stdin
 from typing import *
 
-import requests
-
 
 def cli_main():
     parser = ArgumentParser("drivers-dict")
