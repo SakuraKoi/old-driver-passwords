@@ -90,7 +90,9 @@
 
 ### 周游列网
 
-这个网站：<http://app.cjtecc.cn/compress/yun.php> 提供了以 MD5 值为键的查找方式。用 HTTP GET 方式提交查询，返回一个 JSON 对象。它是解压全能王的密码查询 API，这个软件在安卓端似乎有不少用户，积累下了许多可用的密码。
+这个网站：<http://app.cjtecc.cn/compress/yun.php> 提供了以 MD5 值为键的查找方式[^2]。用 HTTP GET 方式提交查询，返回一个 JSON 对象。它是解压全能王的密码查询 API，这个软件在安卓端似乎有不少用户，积累下了许多可用的密码。
+
+[^2]: API 地址已经改变，无法访问；可以考虑使用一个替代品 <https://www.getpassword.tk/get_password>，不过需要注册。
 
 可以用 PowerShell 命令计算文件的 MD5 值，不需要下载其他软件了，执行这样的命令：
 
@@ -141,4 +143,3 @@ function Query-Cjtecc {
 仓库中准备了 Python 脚本：
 
 * `test.py` 用于测试压缩文件的密码，会挨个从字典中测试
-
