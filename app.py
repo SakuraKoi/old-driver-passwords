@@ -1,11 +1,13 @@
+import json
 from argparse import ArgumentParser
+from hashlib import md5
 from pathlib import Path
 from subprocess import DEVNULL, PIPE, run
 from sys import exit, stdin
 from typing import *
-from hashlib import md5
-from urllib.request import urlopen
-import json
+
+import requests
+
 
 def cli_main():
     parser = ArgumentParser("drivers-dict")
@@ -30,6 +32,8 @@ def cli_main():
                      nargs="?",
                      help="输入文件路径，若留空则从 stdin 读取密码",
                      default=None)
+    query = command.add_parser("query", description="查询解压密码")
+    query.add_argument("INPUT", help="指定压缩文件")
     args = parser.parse_args()
 
     if "test" == args.command:
@@ -38,6 +42,9 @@ def cli_main():
         cli_sort(args.dictionary)
     elif "add" == args.command:
         cli_add(args.dictionary, args.INPUT)
+    elif "query" == args.command:
+        cli_query(args.INPUT)
+
 
 def cli_add(dictionary: str = "resource/dictionary.txt",
             input: Optional[str] = None):
@@ -51,7 +58,8 @@ def cli_add(dictionary: str = "resource/dictionary.txt",
     newpasswords = set([i for i in src.split("\n") if i != ""])
     try:
         oldpasswords = set([
-            i for i in Path(dictionary).read_text("utf-8").split("\n") if i != ""
+            i for i in Path(dictionary).read_text("utf-8").split("\n")
+            if i != ""
         ])
     except FileNotFoundError:
         oldpasswords = set()
@@ -68,13 +76,34 @@ def cli_sort(dictionary: str = "resource/dictionary.txt"):
     print("start: sort")
     try:
         oldpasswords = set([
-            i for i in Path(dictionary).read_text("utf-8").split("\n") if i != ""
+            i for i in Path(dictionary).read_text("utf-8").split("\n")
+            if i != ""
         ])
     except FileNotFoundError:
         oldpasswords = set()
     newpasswords = sorted(list(oldpasswords))
     Path(dictionary).write_text("\n".join(newpasswords), "utf-8")
     print("end: sort")
+
+
+def cli_query(filepath: str):
+    """向 cjtecc 查询解压密码
+    """
+    api = "http://app.cjtecc.cn/compress.yun.php"
+    content = Path(filepath).read_bytes()
+    hashcode = md5(content).hexdigest()
+    url = api.format(md5code=hashcode)
+    resp = requests.get(url, params={"md5": hashcode})
+    if resp.status_code == 200:
+        answer = resp.text
+        if answer == "no":
+            print("没有数据")
+        else:
+            print(answer)
+            obj = json.loads(answer)
+            print(f"#{obj['password']}#")
+    else:
+        raise ValueError(f"无正常响应：{resp.status_code}, {hashcode}")
 
 
 def cli_test(compressed: str, dictionary: str = "resource/dictionary.txt"):
