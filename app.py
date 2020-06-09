@@ -47,9 +47,12 @@ def cli_add(dictionary: str = "resource/dictionary.txt",
         print("start: add")
         src = Path(input).read_text("utf-8")
     newpasswords = set([i for i in src.split("\n") if i != ""])
-    oldpasswords = set([
-        i for i in Path(dictionary).read_text("utf-8").split("\n") if i != ""
-    ])
+    try:
+        oldpasswords = set([
+            i for i in Path(dictionary).read_text("utf-8").split("\n") if i != ""
+        ])
+    except FileNotFoundError:
+        oldpasswords = set()
     passwords = oldpasswords | newpasswords
     sorted_password = [i for i in passwords]
     sorted_password.sort()
@@ -61,10 +64,13 @@ def cli_sort(dictionary: str = "resource/dictionary.txt"):
     """排序去重
     """
     print("start: sort")
-    oldpasswords = [
-        i for i in Path(dictionary).read_text("utf-8").split("\n") if i != ""
-    ]
-    newpasswords = sorted(list(set(oldpasswords)))
+    try:
+        oldpasswords = set([
+            i for i in Path(dictionary).read_text("utf-8").split("\n") if i != ""
+        ])
+    except FileNotFoundError:
+        oldpasswords = set()
+    newpasswords = sorted(list(oldpasswords))
     Path(dictionary).write_text("\n".join(newpasswords), "utf-8")
     print("end: sort")
 
