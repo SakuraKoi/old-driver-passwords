@@ -8,9 +8,9 @@ function Query-Cjtecc {
   param([System.IO.FileInfo]$file)
   $md5 = (Get-FileHash -Algorithm MD5 $file).Hash
   $url = "http://app.cjtecc.cn/compress/yun.php?md5=$md5"
-  $resp = (Invoke-WebRe	quest $url).Content
+  $resp = (Invoke-WebRequest $url).Content
   if ($resp -eq "no") {
-    echo "未找到密码"
+    echo "no data"
   } else {
     $info = (ConvertFrom-Json -InputObject $resp.Content)
     echo "#$($info.password)#"
