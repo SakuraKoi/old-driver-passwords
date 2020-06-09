@@ -3,7 +3,9 @@ from pathlib import Path
 from subprocess import DEVNULL, PIPE, run
 from sys import exit, stdin
 from typing import *
-
+from hashlib import md5
+from urllib.request import urlopen
+import json
 
 def cli_main():
     parser = ArgumentParser("drivers-dict")
@@ -35,7 +37,7 @@ def cli_main():
     elif "sort" == args.command:
         cli_sort(args.dictionary)
     elif "add" == args.command:
-        cli_add(args.dictionary, args.input)
+        cli_add(args.dictionary, args.INPUT)
 
 def cli_add(dictionary: str = "resource/dictionary.txt",
             input: Optional[str] = None):
