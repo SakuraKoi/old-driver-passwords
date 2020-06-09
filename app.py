@@ -44,12 +44,9 @@ def cli_sort(dictionary: str="resource/dictionary.txt"):
     """排序去重
     """
     print("start: sort")
-    with open(dictionary, "rt", encoding="utf-8") as _in:
-        content = [i.rstrip("\n").encode("utf-8")
-                   for i in _in.readlines() if i != ""]
-    listing = sorted(list(set(content)))
-    with open(dictionary, "wb") as _out:
-        _out.write(b"\n".join(listing))
+    oldpasswords = [i for i in Path(dictionary).read_text("utf-8").split("\n") if i != ""]
+    newpasswords = sorted(list(set(oldpasswords)))
+    Path(dictionary).write_text("\n".join(newpasswords), "utf-8")
     print("end: sort")
 
 
@@ -57,6 +54,7 @@ def cli_test(compressed: str, dictionary: str = "resource/dictionary.txt"):
     """测试解压密码"""
     # 测试 7z 是否存在
     try:
+        # todo 用 ctypes 重构
         exe7z = run(["7z", "-version"], stdout=PIPE,
                     stderr=PIPE, encoding="utf-8")
     except FileNotFoundError:
