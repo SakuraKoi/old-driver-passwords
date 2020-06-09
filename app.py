@@ -41,7 +41,7 @@ def cli_main():
     elif "add" == args.command:
         cli_add(args.dictionary, args.INPUT)
     elif "query" == args.command:
-        cli_query(args.INPUT)
+        pass
 
 
 def cli_add(dictionary: str = "resource/dictionary.txt",
