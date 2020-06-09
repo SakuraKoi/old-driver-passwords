@@ -142,4 +142,4 @@ function Query-Cjtecc {
 
 仓库中准备了 Python 脚本：
 
-* `test.py` 用于测试压缩文件的密码，会挨个从字典中测试
+* `app.py` 有 add, sort, test 功能，看 --help 说明
