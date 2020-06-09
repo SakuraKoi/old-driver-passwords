@@ -1,15 +1,14 @@
 from argparse import ArgumentParser
 from pathlib import Path
-from subprocess import PIPE
-from subprocess import DEVNULL
-from subprocess import run
-from sys import exit
+from subprocess import DEVNULL, PIPE, run
+from sys import exit, stdin
+from typing import *
 
 
 def cli_main():
     parser = ArgumentParser("drivers-dict")
     command = parser.add_subparsers(title="subcommands", dest="command")
-    sort = command.add_parser("sort")
+    sort = command.add_parser("sort", description="排序字典中的密码，会剔除重复项")
     sort.add_argument(
         "-d", "--dictionary", help="specific the dictionary file", default="resource/dictionary.txt")
     test = command.add_parser("test")
@@ -25,7 +24,23 @@ def cli_main():
         cli_sort(args.dictionary)
 
 
-def cli_sort(dictionary: str = "resource/dictionary.txt"):
+def cli_add(dictionary: str="resource/dictionary.txt", input: Optional[str]=None):
+    """添加密码，从文件或 stdin 读取
+    """
+    if input is None:
+        src = stdin.read()
+    else:
+        print("start: add")
+        src = Path(input).read_text("utf-8")
+    newpasswords = set([i for i in src.split("\n") if i != ""])
+    oldpasswords = set([i for i in Path(dictionary).read_text("utf-8").split("\n") if i != ""])
+    passwords = oldpasswords | newpasswords
+    sorted_password = [i for i in passwords]
+    sorted_password.sort()
+    Path(dictionary).write_text("\n".join(sorted_password), "utf-8")
+    print("end: add")
+
+def cli_sort(dictionary: str="resource/dictionary.txt"):
     """排序去重
     """
     print("start: sort")
