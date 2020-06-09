@@ -32,8 +32,6 @@ def cli_main():
                      nargs="?",
                      help="输入文件路径，若留空则从 stdin 读取密码",
                      default=None)
-    query = command.add_parser("query", description="查询解压密码")
-    query.add_argument("INPUT", help="指定压缩文件")
     args = parser.parse_args()
 
     if "test" == args.command:
@@ -86,7 +84,8 @@ def cli_sort(dictionary: str = "resource/dictionary.txt"):
     print("end: sort")
 
 
-def cli_query(filepath: str):
+# todo API 已变更，找到新的 API
+def deprecated_cli_query(filepath: str):
     """向 cjtecc 查询解压密码
     """
     api = "http://app.cjtecc.cn/compress.yun.php"
